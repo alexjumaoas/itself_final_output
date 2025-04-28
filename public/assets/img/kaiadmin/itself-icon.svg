@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Main gear -->
+  <path d="M100 60
+           a40 40 0 1 0 0 80
+           a40 40 0 1 0 0 -80
+           M100 75
+           a25 25 0 1 1 0 50
+           a25 25 0 1 1 0 -50" 
+        fill="#4A90E2"/>
+  
+  <!-- Gear teeth -->
+  <g fill="#2C3E50">
+    <rect x="95" y="40" width="10" height="20" rx="2"/>
+    <rect x="95" y="140" width="10" height="20" rx="2"/>
+    <rect x="40" y="95" width="20" height="10" rx="2"/>
+    <rect x="140" y="95" width="20" height="10" rx="2"/>
+    <!-- Diagonal teeth -->
+    <rect x="60" y="60" width="15" height="10" rx="2" transform="rotate(-45 60 60)"/>
+    <rect x="130" y="130" width="15" height="10" rx="2" transform="rotate(-45 130 130)"/>
+    <rect x="130" y="60" width="15" height="10" rx="2" transform="rotate(45 130 60)"/>
+    <rect x="60" y="130" width="15" height="10" rx="2" transform="rotate(45 60 130)"/>
+  </g>
+  
+  <!-- Wrench -->
+  <path d="M135 35
+           L150 20
+           A10 10 0 0 1 165 35
+           L150 50
+           L135 35" 
+        fill="#E74C3C"/>
+  
+  <!-- Screwdriver -->
+  <g transform="rotate(-45 40 160)">
+    <rect x="30" y="150" width="20" height="8" rx="2" fill="#E67E22"/>
+    <path d="M50 154 L65 154 L58 158 L50 154" fill="#7F8C8D"/>
+  </g>
+</svg>
