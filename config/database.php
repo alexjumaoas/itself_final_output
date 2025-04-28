@@ -34,7 +34,7 @@ return [
       'dtr' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST_PRIMARY', '127.0.0.1'),
-            'database' => env('DB_DATABASE_PRIMARY', 'dohdtr'),
+            'database' => env('DB_DATABASE_PRIMARY', 'dtr'),
             'username' => env('DB_USERNAME_PRIMARY', 'root'),
             'password' => env('DB_PASSWORD_PRIMARY', ''),
             'charset' => 'utf8mb4',

@@ -31,4 +31,12 @@ class Dts_user extends Model
     {
         return $this->hasMany(Dtruser::class, 'userid', 'username');
     }
+
+    public function specialization()
+    {
+        // Ensure we're explicitly defining the foreign and local keys
+        return $this->hasOne(Specialization::class, 'userid', 'username')
+                    ->on('mysql'); // Specify the connection explicitly
+    }
+    
 }

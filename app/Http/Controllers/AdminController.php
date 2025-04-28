@@ -8,6 +8,7 @@ use App\Models\Technician;
 use App\Models\Dtruser;
 use App\Models\Dts_user;
 use App\Models\Job_request;
+use App\Models\Specialization;
 use App\Models\Request_History;
 use App\Services\JobRequestService;
 use App\Models\Activity_request;
@@ -24,8 +25,19 @@ class AdminController extends Controller
         $this->jobRequestService = $jobRequestService;
     }
 
+    public function forTesting() {
+        //return Dts_user::where('section', 80)->with(['specialization'])->get();
+        $users = Dts_user::where('section', 80)->get();
+        foreach ($users as $user) {
+            $user->setRelation('specialization', 
+                Specialization::where('userid', $user->username)->first());
+        }
+        return $users;
+    }
+
     public function index(Request $request)
     {
+        //return $this->forTesting();
         $user = $request->get('currentUser');
 
         $pendingCount = 0;
