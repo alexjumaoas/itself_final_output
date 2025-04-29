@@ -48,12 +48,12 @@
                 <input type="hidden" name="request_id" id ="job_request_id"> 
                 <input type="hidden" name="transfer" value="transferred"> 
                 <div class="modal-body">
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="transferTo">Transfer to :</label>
                         <select class="form-select form-control" name="transferTo" id="transferTo" required>
                             <option value="" disabled selected>Select Technician</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="transferReason" class="form-label">Reason for transferring :</label>
                         <input type="text" class="form-control" name="transferReason" id="transferReason" required>
@@ -84,22 +84,27 @@
             const transferSelect = document.getElementById('transferTo');
             
             // Clear existing options first
-            transferSelect.innerHTML = '<option value="" disabled selected>Select Technician</option>';
+            if(transferSelect) {
+                transferSelect.innerHTML = '<option value="" disabled selected>Select Technician</option>';
             
-            technicians.forEach(tech => {
-                const option = document.createElement('option');
-                option.value = tech.userid;
-                option.textContent = `${tech.dtr_user?.fname || 'Unknown'} ${tech.dtr_user?.lname || 'Unknown'}`;
-                transferSelect.appendChild(option);
-            });
-
+                technicians.forEach(tech => {
+                    const option = document.createElement('option');
+                    option.value = tech.userid;
+                    option.textContent = `${tech.dtr_user?.fname || 'Unknown'} ${tech.dtr_user?.lname || 'Unknown'}`;
+                    transferSelect.appendChild(option);
+                });
+            }
+            
             const code = this.getAttribute('data-code');
             const requestid = this.getAttribute('data-id');
 
             document.getElementById('request_code').value = code;
             document.getElementById('job_request_id').value = requestid;
 
-            transferSelect.classList.remove('is-invalid');
+            if(transferSelect) {
+                transferSelect.classList.remove('is-invalid');
+            }
+            
             document.getElementById('transferReason').classList.remove('is-invalid');
         });
     });

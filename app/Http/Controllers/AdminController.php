@@ -26,18 +26,27 @@ class AdminController extends Controller
     }
 
     public function forTesting() {
-        //return Dts_user::where('section', 80)->with(['specialization'])->get();
         $users = Dts_user::where('section', 80)->get();
         foreach ($users as $user) {
-            $user->setRelation('specialization', 
-                Specialization::where('userid', $user->username)->first());
+            $user->setRelation('specialization', Specialization::where('userid', $user->username)->first());
         }
-        return $users;
+
+        $filteredUsers = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'fname' => $user->fname,
+                'mname' => $user->mname,
+                'lname' => $user->lname,
+                'username' => $user->username,
+                'specialization' => $user->specialization,
+            ];
+        });
+
+        return $filteredUsers;
     }
 
     public function index(Request $request)
     {
-        //return $this->forTesting();
         $user = $request->get('currentUser');
 
         $pendingCount = 0;

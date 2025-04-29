@@ -13,6 +13,9 @@ use Carbon\Carbon;
 use App\Services\JobRequestService;
 use Illuminate\Support\Facades\Redirect;
 use App\Services\OpenAIService;
+use App\Models\Dts_user;
+use App\Models\Specialization;
+use Illuminate\Support\Facades\Http;
 
 class TechnicianController extends Controller
 {
@@ -173,12 +176,115 @@ class TechnicianController extends Controller
         return Redirect::back()->with('success', 'You have successfully finished a request!');
     }
 
-    public function Transfer(Request $req){
-        //Transfered_Request
+    private function getTechnicians($username)
+    {
+        $users = Dts_user::where('section', 80)->where('username','!=',$username)->get();
+        
+        foreach ($users as $user) {
+            $user->setRelation('specialization', Specialization::where('userid', $user->username)->first());
+        }
+        
+        return $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'fname' => $user->fname,
+                'mname' => $user->mname,
+                'lname' => $user->lname,
+                'username' => $user->username,
+                'specialization' => $user->specialization ? $user->specialization->specialization : null,
+            ];
+        })->toArray();
+    }
+
+    private function findBestTechnician($requestDetails, $technicians)
+    {
+        $apiKey = env('OPENAI_API_KEY');
+        
+        // Format the data for the OpenAI API
+        $prompt = $this->buildPrompt($requestDetails, $technicians);
+        
+        // Make the API call to OpenAI
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Content-Type' => 'application/json',
+        ])->post('https://api.openai.com/v1/chat/completions', [
+            'model' => 'gpt-4-turbo', // Use the appropriate model name for GPT-4.1
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are an AI assistant that helps assign the most appropriate IT technician to service requests in a healthcare setting. Analyze the request details and available technicians to select the best match based on their specialization and the nature of the request.'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ],
+            'temperature' => 0.3, // Lower temperature for more predictable results
+            'max_tokens' => 500,
+            'response_format' => ['type' => 'json_object']
+        ]);
+        
+        // Process the API response
+        $data = $response->json();
+        
+        if (isset($data['choices'][0]['message']['content'])) {
+            $aiResponse = json_decode($data['choices'][0]['message']['content'], true);
+            
+            // Find the selected technician in our original array to get complete info
+            foreach ($technicians as $technician) {
+                if ($technician['username'] === $aiResponse['selected_technician_username']) {
+                    return $technician;
+                }
+            }
+            
+            // Fallback to the first technician if no match found
+            return $technicians[0];
+        }
+        
+        // Fallback if OpenAI API call fails
+        return $technicians[0];
+    }
+
+    private function buildPrompt($requestDetails, $technicians)
+    {
+        // Convert technician data to a simpler format for the prompt
+        $technicianInfo = [];
+        foreach ($technicians as $tech) {
+            $technicianInfo[] = [
+                'username' => $tech['username'],
+                'name' => $tech['fname'] . ' ' . $tech['lname'],
+                'specialization' => $tech['specialization']
+            ];
+        }
+        
+        return "I need to assign the most appropriate IT technician to a service request in our healthcare facility.
+
+        SERVICE REQUEST DETAILS: {$requestDetails}
+
+        AVAILABLE TECHNICIANS:
+        " . json_encode($technicianInfo, JSON_PRETTY_PRINT) . "
+
+        Based on the service request details and technician specializations, determine which technician is best suited to handle this request. Consider the nature of the issue, required skills, and technician expertise. 
+
+        Return your response in JSON format with the following structure:
+        {
+        \"selected_technician_username\": \"[username]\",
+        \"reasoning\": \"[brief explanation of why this technician was selected]\",
+        \"matching_factors\": [\"factor1\", \"factor2\"]
+        }";
+    }
+
+    public function Transfer(Request $req) {
         $user = $req->get('currentUser');
+
+        $descriptionStringForAI = Job_request::where('request_code', $req->code)->first()->description;
+        $suggestFromAI = $this->findBestTechnician($descriptionStringForAI, $this->getTechnicians($user->userid))['username'];
+
+
         $tranferred = new Activity_request();
         $tranferred->tech_from = $user->userid;
-        $tranferred->tech_to = $req->transferTo;
+        // $tranferred->tech_to = $req->transferTo;
+        $tranferred->tech_to = $suggestFromAI; //transfer by AI
         $tranferred->request_code = $req->code;
         $tranferred->job_request_id = $req->request_id;
         $tranferred->remarks = $req->transferReason;
