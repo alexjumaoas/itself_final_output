@@ -425,7 +425,7 @@ use App\Models\Dtruser;
                     </button>
                     @else
                     <div class="card-footer text-center bubble-shadow" style="background-color: #6861ce; color: white; padding: 10px;">
-                       <strong>Accepted by : {{ $user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname : 'N/A'}}</strong>
+                     Accepted by :  <strong> {{ $user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname. ' '. (($user->username)) : 'N/A'}}</strong>
                     </div>
                     @endif
                 @endif
@@ -510,7 +510,7 @@ use App\Models\Dtruser;
                         </div>
                     @else
                         <div class="card-footer text-center bubble-shadow" style="background-color: #ffad46; color: white; padding: 10px;">
-                            <strong>Transferred to : {{ $dtrUser_to ? $dtrUser_to->fname . ' ' . $dtrUser_to->lname : 'N/A' }}</strong><br>
+                           Transferred to : <strong> {{ $dtrUser_to ? $dtrUser_to->fname . ' ' . $dtrUser_to->lname. ' '. $dtrUser_to->username : 'N/A' }}</strong><br>
                         </div>
                     @endif
                 </div>
