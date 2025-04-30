@@ -144,9 +144,9 @@
                     @endphp
                     <div class="card-footer text-center bubble-shadow" style="{{ $accepted->status == 'transferred' ? 'background-color: #ffad46; color: white; padding: 10px;' : 'background-color: #6861ce; color: white; padding: 10px;'}}">
                         @if($accepted->status == 'transferred')
-                            <strong> {{$userto ? $userto->fname. ' ' . $userto->mname. ' ' . $userto->lname : 'N/A'}}</strong> is on the way
+                            <strong> {{$userto ? $userto->fname. ' ' . $userto->mname. ' ' . $userto->lname. '( '. $user->username.')' : 'N/A'}}</strong> is on the way  fdfdfd
                         @else
-                            <strong> {{$user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname : 'N/A'}}</strong> is on the way
+                            <strong> {{$user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname.'( '. $user->username.')' : 'N/A'}}</strong> is on the way
                         @endif
 
                     </div>
