@@ -34,6 +34,7 @@ Route::middleware(['check.user.type:1', 'load.user.data'])->group(function () {
     Route::get('/admin/request', [TechnicianController::class, 'requestor'])->name('admin.request');
     Route::Post('/admin/cancel', [AdminController::class, 'adminCancel'])->name('admin.cancel');
     Route::get('/admin/check-status', [AdminController::class, 'checkRequestStatus'])->name('admin.check.status');
+    Route::get('/admin/specialized', [AdminController::class, 'forTesting'])->name('admin.specialized');
 });
 
 //technician

@@ -305,6 +305,9 @@ class TechnicianController extends Controller
             ]);
         }
 
+        $req['currentUser'] = Dtruser::where('userid', $suggestFromAI)->first();
+        $this->acceptRequest($req, $job_req->id, $job_req->request_code);
+
         $transferredData = [
             'request_code' => $req->code,
             'tech_from' => $techfrom->fname . ' ' . $techfrom->lname,

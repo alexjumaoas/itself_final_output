@@ -405,7 +405,7 @@ use App\Models\Dtruser;
 
                 @if($userInfo->usertype == 1)
                     <div class="card-footer text-center bubble-shadow" style="background-color: #6861ce; color: white; padding: 10px;">
-                      <strong>Accepted by : {{$user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname : 'N/A'}}</strong>
+                      <strong>Assigned To : {{$user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname : 'N/A'}}</strong>
                     </div>
                 @else
                     @if($accepted->tech_from == $userInfo->userid || $accepted->tech_to == $userInfo->userid)
@@ -425,7 +425,7 @@ use App\Models\Dtruser;
                     </button>
                     @else
                     <div class="card-footer text-center bubble-shadow" style="background-color: #6861ce; color: white; padding: 10px;">
-                     Accepted by :  <strong> {{ $user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname. ' '. (($user->username)) : 'N/A'}}</strong>
+                     Assigned To :  <strong> {{ $user ? $user->fname. ' ' . $user->mname. ' ' . $user->lname. ' '. (($user->username)) : 'N/A'}}</strong>
                     </div>
                     @endif
                 @endif
